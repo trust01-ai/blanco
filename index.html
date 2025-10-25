@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Boutique — Minimal Clothing Store (Prototype)</title>
+  <title>Blanco — Minimal Clothing Store (Prototype)</title>
 
   <!-- Basic reset + system font stack for a modern minimal feel -->
   <style>
@@ -80,6 +80,16 @@
       flex:1;
       max-width:520px;
     }
+
+    .hero-bg-local {
+      background-image: url('./Imgs/p9.jpg');
+      background-color: transparent !important;
+      /* Add other background properties if needed */
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
     .eyebrow{color:var(--accent-2);text-transform:uppercase;font-size:12px;letter-spacing:1px}
     .hero-title{
       font-size:40px;
@@ -104,12 +114,13 @@
       align-items:center;
     }
     .hero-img{
+      background-color: transparent !important;
       width:320px;
       height:420px;
-      border-radius:12px;
+<!--      border-radius:12px;-->
       background-size:cover;
       background-position:center;
-      box-shadow:var(--card-shadow);
+<!--      box-shadow:var(&#45;&#45;card-shadow);-->
     }
 
     /* Product grid */
@@ -228,7 +239,7 @@
   <div class="container">
     <!-- Header -->
     <header>
-      <div class="brand" aria-label="Boutique">Boutique</div>
+      <div class="brand" aria-label="Boutique">Blanco</div>
 
       <nav aria-label="Main navigation">
         <a href="#" aria-current="page">New</a>
@@ -252,11 +263,11 @@
       <div class="hero-left">
         <div class="eyebrow">spring / summer</div>
         <h1 class="hero-title" id="hero-title">Minimal Collection — Timeless pieces</h1>
-        <p class="hero-desc">A small curated selection of essential garments with a clean and modern aesthetic. High-quality photos, simple layout, and frictionless checkout.</p>
+        <p class="hero-desc">A small curated selection of essential garments with a clean and modern aesthetic. High-quality clothing's, simple, and frictionless checkout.</p>
         <a class="cta" href="#" id="shop-now">Shop new arrivals</a>
       </div>
       <div class="hero-right">
-        <div class="hero-img" style="background-image:url('https://images.unsplash.com/photo-1541099649105-f69ad21f3246?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.0.3&s=8f8a2d1c5a7b3a3e55a9f0b6f5d7f6c8');" role="img" aria-label="Model wearing minimal outfit"></div>
+        <div class="hero-img hero-bg-local" role="img" aria-label="Model wearing minimal outfit"></div>
       </div>
     </section>
 
@@ -277,7 +288,7 @@
     </main>
 
     <footer>
-      © Boutique — Minimal clothing prototype • Built as a demo. Use original imagery and branding for production.
+      © Blanco — Minimal clothing prototype • Built as a demo. Use original imagery and branding for production.
     </footer>
   </div>
 
@@ -324,14 +335,14 @@
   <script>
     // Mock product data (replace with real data from API/backend later)
     const products = [
-      { id: 'p1', title:'Oversized Shirt', price:49.00, img:'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=8f8a2d1c5a7b3a3e55a9f0b6f5d7f6c8', sku:'S-001' },
-      { id: 'p2', title:'Tailored Jacket', price:129.00, img:'https://images.unsplash.com/photo-1520975666906-6f3b36cb63a5?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=1c4b5c9d7a3b4c2d5e6f7a8b9c0d1e2f', sku:'J-012' },
-      { id: 'p3', title:'Relaxed Trousers', price:69.00, img:'https://images.unsplash.com/photo-1520975944461-0507e7a3b9ff?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=2b3a4c5d6e7f8a9b0c1d2e3f4a5b6c7d', sku:'T-108' },
-      { id: 'p4', title:'Minimal Dress', price:89.00, img:'https://images.unsplash.com/photo-1520975666906-6f3b36cb63a5?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=11a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6', sku:'D-004' },
-      { id: 'p5', title:'Classic Tee', price:29.00, img:'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=aaaabbbbccccddddeeeeffff11112222', sku:'TS-010' },
-      { id: 'p6', title:'Lightweight Knit', price:59.00, img:'https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=bbbbaaaaccccddeeefff111122223333', sku:'KN-022' },
-      { id: 'p7', title:'Long Coat', price:199.00, img:'https://images.unsplash.com/photo-1542062703-3b3e2b0d7b9a?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=cccdddeeefff11112222333344445555', sku:'C-088' },
-      { id: 'p8', title:'Everyday Shorts', price:39.00, img:'https://images.unsplash.com/photo-1503342452485-86f7b3e2b3a4?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=ddddeeefff11112222333344445555666', sku:'SH-009' }
+      { id: 'p1', title:'Oversized Shirt', price:49.00, img:'./Imgs/p1.jpg', sku:'S-001' },
+      { id: 'p2', title:'Tailored Jacket', price:129.00, img:'./Imgs/p2.jpg', sku:'J-012' },
+      { id: 'p3', title:'Relaxed Trousers', price:69.00, img:'./Imgs/p3.jpg', sku:'T-108' },
+      { id: 'p4', title:'Minimal Dress', price:89.00, img:'./Imgs/p4.jpg', sku:'D-004' },
+      { id: 'p5', title:'Classic Tee', price:29.00, img:'./Imgs/p5.jpg', sku:'TS-010' },
+      { id: 'p6', title:'Lightweight Knit', price:59.00, img:'./Imgs/p6.jpg', sku:'KN-022' },
+      { id: 'p7', title:'Long Coat', price:199.00, img:'./Imgs/p7.jpg', sku:'C-088' },
+      { id: 'p8', title:'Everyday Shorts', price:39.00, img:'./Imgs/p8.jpg', sku:'SH-009' }
     ];
 
     // App state
