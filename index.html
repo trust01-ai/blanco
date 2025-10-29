@@ -59,6 +59,11 @@
       font-size:14px;
       text-transform:uppercase;
       letter-spacing:0.6px;
+      cursor:pointer;
+    }
+    nav a.active{
+      color:var(--accent);
+      font-weight:600;
     }
     .icon-btn{
       border: none;
@@ -106,6 +111,7 @@
       text-decoration:none;
       font-weight:600;
       font-size:14px;
+      cursor:pointer;
     }
     .hero-right{
       flex:1;
@@ -242,11 +248,11 @@
       <div class="brand" aria-label="Boutique">Blanco</div>
 
       <nav aria-label="Main navigation">
-        <a href="#" aria-current="page">New</a>
-        <a href="#">Women</a>
-        <a href="#">Men</a>
-        <a href="#">Accessories</a>
-        <a href="#">Sale</a>
+        <a href="#" class="nav-link active" data-category="all">New</a>
+        <a href="#" class="nav-link" data-category="women">Women</a>
+        <a href="#" class="nav-link" data-category="men">Men</a>
+        <a href="#" class="nav-link" data-category="accessories">Accessories</a>
+        <a href="#" class="nav-link" data-category="kids">Kids</a>
       </nav>
 
       <div style="display:flex;align-items:center;gap:12px">
@@ -333,21 +339,26 @@
 
   <!-- Script: product data + behaviors -->
   <script>
-    // Mock product data (replace with real data from API/backend later)
+    // Mock product data with categories
     const products = [
-      { id: 'p1', title:'Oversized Shirt', price:49.00, img:'./Imgs/p1.jpg', sku:'S-001' },
-      { id: 'p2', title:'Tailored Jacket', price:129.00, img:'./Imgs/p2.jpg', sku:'J-012' },
-      { id: 'p3', title:'Relaxed Trousers', price:69.00, img:'./Imgs/p3.jpg', sku:'T-108' },
-      { id: 'p4', title:'Minimal Dress', price:89.00, img:'./Imgs/p4.jpg', sku:'D-004' },
-      { id: 'p5', title:'Classic Tee', price:29.00, img:'./Imgs/p5.jpg', sku:'TS-010' },
-      { id: 'p6', title:'Lightweight Knit', price:59.00, img:'./Imgs/p6.jpg', sku:'KN-022' },
-      { id: 'p7', title:'Long Coat', price:199.00, img:'./Imgs/p7.jpg', sku:'C-088' },
-      { id: 'p8', title:'Everyday Shorts', price:39.00, img:'./Imgs/p8.jpg', sku:'SH-009' }
+      { id: 'p1', title:'Oversized Shirt', price:49.00, img:'./Imgs/p1.jpg', sku:'S-001', category: 'women' },
+      { id: 'p2', title:'Tailored Jacket', price:129.00, img:'./Imgs/p2.jpg', sku:'J-012', category: 'men' },
+      { id: 'p3', title:'Relaxed Trousers', price:69.00, img:'./Imgs/p3.jpg', sku:'T-108', category: 'women' },
+      { id: 'p4', title:'Minimal Dress', price:89.00, img:'./Imgs/p4.jpg', sku:'D-004', category: 'women' },
+      { id: 'p5', title:'Classic Tee', price:29.00, img:'./Imgs/p5.jpg', sku:'TS-010', category: 'men' },
+      { id: 'p6', title:'Lightweight Knit', price:59.00, img:'./Imgs/p6.jpg', sku:'KN-022', category: 'women' },
+      { id: 'p7', title:'Long Coat', price:199.00, img:'./Imgs/p7.jpg', sku:'C-088', category: 'men' },
+      { id: 'p8', title:'Everyday Shorts', price:39.00, img:'./Imgs/p8.jpg', sku:'SH-009', category: 'men' },
+      { id: 'p9', title:'Kids T-Shirt', price:24.00, img:'./Imgs/p5.jpg', sku:'KT-001', category: 'kids' },
+      { id: 'p10', title:'Kids Jacket', price:59.00, img:'./Imgs/p2.jpg', sku:'KJ-002', category: 'kids' },
+      { id: 'p11', title:'Leather Bag', price:79.00, img:'./Imgs/p1.jpg', sku:'A-101', category: 'accessories' },
+      { id: 'p12', title:'Minimal Watch', price:149.00, img:'./Imgs/p3.jpg', sku:'A-102', category: 'accessories' }
     ];
 
     // App state
     const state = {
-      cart: {} // id -> { product, qty }
+      cart: {}, // id -> { product, qty }
+      currentCategory: 'all'
     };
 
     // Utilities
@@ -358,7 +369,11 @@
     const grid = $('product-grid');
     function renderProducts(list){
       grid.innerHTML = '';
-      list.forEach(p => {
+      const filteredList = state.currentCategory === 'all'
+        ? list
+        : list.filter(p => p.category === state.currentCategory);
+
+      filteredList.forEach(p => {
         const el = document.createElement('article');
         el.className = 'card';
         el.innerHTML = `
@@ -376,9 +391,38 @@
         `;
         grid.appendChild(el);
       });
+      $('product-count').textContent = filteredList.length;
     }
+
+    // Initialize with all products
     renderProducts(products);
-    $('product-count').textContent = products.length;
+
+    // Category navigation
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        // Update active state
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+        e.target.classList.add('active');
+
+        // Filter products
+        state.currentCategory = e.target.dataset.category;
+        let filteredProducts = products;
+
+        if (state.currentCategory !== 'all') {
+          filteredProducts = products.filter(p => p.category === state.currentCategory);
+        }
+
+        // Apply current sort to filtered products
+        const sortValue = $('sort').value;
+        let sorted = [...filteredProducts];
+        if(sortValue==='price-asc') sorted.sort((a,b)=>a.price-b.price);
+        else if(sortValue==='price-desc') sorted.sort((a,b)=>b.price-a.price);
+
+        renderProducts(sorted);
+      });
+    });
 
     // Quick view modal
     const modalBg = $('modal-bg');
@@ -507,9 +551,11 @@
       });
     }
 
-    // Checkout (demo)
+    // Checkout - Redirect to WhatsApp Business
     $('checkout').addEventListener('click', ()=>{
-      alert('Demo checkout: integrate with backend/payment gateway for real orders.');
+      // Replace with your actual WhatsApp Business URL
+      const whatsappUrl = "https://wa.me/1234567890?text=Hi%2C%20I%20would%20like%20to%20place%20an%20order";
+      window.open(whatsappUrl, '_blank');
     });
 
     // Close modal on outside click
@@ -520,7 +566,11 @@
     // Simple sort (client-side)
     $('sort').addEventListener('change', (e)=>{
       const v = e.target.value;
-      let sorted = [...products];
+      let filteredProducts = state.currentCategory === 'all'
+        ? products
+        : products.filter(p => p.category === state.currentCategory);
+
+      let sorted = [...filteredProducts];
       if(v==='price-asc') sorted.sort((a,b)=>a.price-b.price);
       else if(v==='price-desc') sorted.sort((a,b)=>b.price-a.price);
       renderProducts(sorted);
