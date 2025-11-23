@@ -160,28 +160,49 @@
       border:none;background:none;cursor:pointer;color:var(--accent-2);font-size:14px;padding:6px;
     }
 
-    /* Video Container */
+    /* Video Container - Classic & Professional */
+    .video-section {
+      margin: 60px 0;
+      text-align: center;
+    }
+    .video-section-title {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--accent);
+      letter-spacing: 0.5px;
+    }
+    .video-section-subtitle {
+      color: var(--accent-2);
+      font-size: 14px;
+      margin-bottom: 40px;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
     .video-container {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 20px;
-      margin: 40px 0;
-    }
-    .video-column {
-      display: grid;
-      grid-template-rows: 1fr 1fr;
-      gap: 20px;
+      gap: 24px;
+      max-width: 900px;
+      margin: 0 auto;
     }
     .video-item {
       width: 100%;
-      height: 300px;
-      border-radius: 8px;
+      border-radius: 12px;
       overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .video-item:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.12);
     }
     .video-item video {
       width: 100%;
-      height: 100%;
+      height: 300px;
       object-fit: cover;
+      display: block;
     }
 
     /* Cart drawer */
@@ -250,7 +271,7 @@
       .hero-right{order:-1;width:100%}
       .hero-img{width:100%;height:420px}
       .video-container {
-        grid-template-columns: 1fr;
+        max-width: 600px;
       }
     }
     @media(max-width:720px){
@@ -258,7 +279,11 @@
       .card-media{height:300px}
       .modal{flex-direction:column}
       .modal-media{width:100%;height:260px}
-      .video-item {
+      .video-container {
+        grid-template-columns: 1fr;
+        max-width: 400px;
+      }
+      .video-item video {
         height: 250px;
       }
     }
@@ -266,8 +291,11 @@
       .grid{grid-template-columns:1fr}
       .hero-title{font-size:28px}
       .hero-desc{font-size:14px}
-      .video-item {
+      .video-item video {
         height: 200px;
+      }
+      .video-section-title {
+        font-size: 20px;
       }
     }
 
@@ -387,15 +415,15 @@
       { id: 'p10', title:'Kids Jacket', price:40000, img:'./Imgs/p112.jpg', sku:'KJ-002', category: 'kids' },
       { id: 'p11', title:'Leather Bag', price:40000, img:'./Imgs/p111.jpg', sku:'A-101', category: 'accessories' },
       { id: 'p12', title:'Minimal Watch', price:40000, img:'./Imgs/p3.jpg', sku:'A-102', category: 'accessories' },
-      { id: 'p13', title:'Minimal Watch', price:40000, img:'./Imgs/p300.jpg', sku:'A-102', category: 'accessories' },
-      { id: 'p14', title:'Minimal Watch', price:40000, img:'./Imgs/p301.jpg', sku:'A-102', category: 'accessories' },
-      { id: 'p15', title:'Minimal Watch', price:40000, img:'./Imgs/p302.jpg', sku:'A-102', category: 'accessories' },
-      { id: 'p16', title:'Minimal Watch', price:40000, img:'./Imgs/p303.jpg', sku:'A-102', category: 'accessories' },
-      { id: 'p17', title:'Minimal Watch', price:40000, img:'./Imgs/p304.jpg', sku:'A-102', category: 'accessories' },
-      { id: 'p18', title:'Minimal Watch', price:40000, img:'./Imgs/p333.jpg', sku:'A-102', category: 'accessories' },
-      { id: 'p19', title:'Minimal Watch', price:40000, img:'./Imgs/p401.jpg', sku:'A-102', category: 'accessories' },
-      { id: 'p20', title:'Minimal Watch', price:40000, img:'./Imgs/p402.jpg', sku:'A-102', category: 'accessories' },
-      { id: 'p21', title:'Minimal Watch', price:40000, img:'./Imgs/p403.jpg', sku:'A-102', category: 'accessories' },
+      { id: 'p13', title:'Elegant Scarf', price:40000, img:'./Imgs/p300.jpg', sku:'A-103', category: 'accessories' },
+      { id: 'p14', title:'Classic Belt', price:40000, img:'./Imgs/p301.jpg', sku:'A-104', category: 'accessories' },
+      { id: 'p15', title:'Sunglasses', price:40000, img:'./Imgs/p302.jpg', sku:'A-105', category: 'accessories' },
+      { id: 'p16', title:'Weekend Bag', price:40000, img:'./Imgs/p303.jpg', sku:'A-106', category: 'accessories' },
+      { id: 'p17', title:'Evening Gown', price:40000, img:'./Imgs/p304.jpg', sku:'D-005', category: 'women' },
+      { id: 'p18', title:'Casual Blouse', price:40000, img:'./Imgs/p333.jpg', sku:'S-002', category: 'women' },
+      { id: 'p19', title:'Winter Sweater', price:40000, img:'./Imgs/p401.jpg', sku:'KN-023', category: 'women' },
+      { id: 'p20', title:'Formal Shirt', price:40000, img:'./Imgs/p402.jpg', sku:'S-003', category: 'men' },
+      { id: 'p21', title:'Casual Pants', price:40000, img:'./Imgs/p403.jpg', sku:'T-109', category: 'men' },
     ];
 
     // App state
@@ -408,7 +436,7 @@
     const $ = id => document.getElementById(id);
     function formatPrice(v){ return '₦' + v.toLocaleString('en-NG') }
 
-    // Render products grid with video container after first 12 products
+    // Render products grid with video section after first 12 products
     const grid = $('product-grid');
     function renderProducts(list){
       grid.innerHTML = '';
@@ -416,12 +444,8 @@
         ? list
         : list.filter(p => p.category === state.currentCategory);
 
-      // Split products into chunks: first 12, then the rest
-      const firstTwelve = filteredList.slice(0, 12);
-      const remainingProducts = filteredList.slice(12);
-
-      // Render first 12 products
-      firstTwelve.forEach(p => {
+      // Render all products first
+      filteredList.forEach(p => {
         const el = document.createElement('article');
         el.className = 'card';
         el.innerHTML = `
@@ -440,62 +464,50 @@
         grid.appendChild(el);
       });
 
-      // Add video container after first 12 products
-      if (remainingProducts.length > 0) {
-        const videoContainer = document.createElement('div');
-        videoContainer.className = 'video-container';
-        videoContainer.innerHTML = `
-          <div class="video-column">
-            <div class="video-item">
-              <video autoplay loop muted playsinline>
-                <source src="./videos/video1.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-              </video>
+      // If we have more than 12 products, insert video section after the 12th product
+      if (filteredList.length > 12) {
+        const allCards = grid.querySelectorAll('.card');
+        if (allCards.length > 12) {
+          const twelfthCard = allCards[11]; // 12th card (0-indexed)
+          
+          // Create video section
+          const videoSection = document.createElement('div');
+          videoSection.className = 'video-section';
+          videoSection.innerHTML = `
+            <h2 class="video-section-title">The Blanco Experience</h2>
+            <p class="video-section-subtitle">Discover the craftsmanship and elegance behind our minimal collection</p>
+            <div class="video-container">
+              <div class="video-item">
+                <video autoplay loop muted playsinline>
+                  <source src="./videos/video1.mp4" type="video/mp4">
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+              <div class="video-item">
+                <video autoplay loop muted playsinline>
+                  <source src="./videos/video2.mp4" type="video/mp4">
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+              <div class="video-item">
+                <video autoplay loop muted playsinline>
+                  <source src="./videos/video3.mp4" type="video/mp4">
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+              <div class="video-item">
+                <video autoplay loop muted playsinline>
+                  <source src="./videos/video4.mp4" type="video/mp4">
+                  Your browser does not support the video tag.
+                </video>
+              </div>
             </div>
-            <div class="video-item">
-              <video autoplay loop muted playsinline>
-                <source src="./videos/video2.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-              </video>
-            </div>
-          </div>
-          <div class="video-column">
-            <div class="video-item">
-              <video autoplay loop muted playsinline>
-                <source src="./Videos/video3.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-              </video>
-            </div>
-            <div class="video-item">
-              <video autoplay loop muted playsinline>
-                <source src="./Videos/video4.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-              </video>
-            </div>
-          </div>
-        `;
-        grid.appendChild(videoContainer);
+          `;
+          
+          // Insert video section after the 12th card
+          twelfthCard.parentNode.insertBefore(videoSection, twelfthCard.nextSibling);
+        }
       }
-
-      // Render remaining products after video container
-      remainingProducts.forEach(p => {
-        const el = document.createElement('article');
-        el.className = 'card';
-        el.innerHTML = `
-          <div class="card-media" style="background-image:url('${p.img}')" role="img" aria-label="${p.title}"></div>
-          <div class="card-body">
-            <div>
-              <div class="product-title">${p.title}</div>
-              <div class="product-price">${formatPrice(p.price)}</div>
-            </div>
-            <div style="display:flex;flex-direction:column;align-items:flex-end">
-              <button class="quick" data-id="${p.id}" aria-label="Quick view ${p.title}">Quick view</button>
-              <button class="quick" data-add="${p.id}" aria-label="Add ${p.title} to cart">＋</button>
-            </div>
-          </div>
-        `;
-        grid.appendChild(el);
-      });
 
       $('product-count').textContent = filteredList.length;
     }
