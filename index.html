@@ -308,7 +308,7 @@
     <div class="drawer-footer">
       <div>
         <div class="muted">Estimated total</div>
-        <div style="font-weight:700;font-size:18px" id="cart-total">$0.00</div>
+        <div style="font-weight:700;font-size:18px" id="cart-total">₦0.00</div>
       </div>
       <button class="cta" id="checkout" style="background:var(--cta);">Checkout</button>
     </div>
@@ -325,7 +325,7 @@
         </div>
         <div id="modal-desc" class="muted">Description</div>
         <div style="display:flex;gap:12px;align-items:center">
-          <div style="font-weight:700;font-size:20px" id="modal-price">$0.00</div>
+          <div style="font-weight:700;font-size:20px" id="modal-price">₦0.00</div>
           <div class="muted" id="modal-sku">SKU: —</div>
         </div>
 
@@ -339,20 +339,20 @@
 
   <!-- Script: product data + behaviors -->
   <script>
-    // Mock product data with categories
+    // Mock product data with categories - all prices set to ₦40,000
     const products = [
-      { id: 'p1', title:'Oversized Shirt', price:49.00, img:'./Imgs/p1.jpg', sku:'S-001', category: 'women' },
-      { id: 'p2', title:'Tailored Jacket', price:129.00, img:'./Imgs/p2.jpg', sku:'J-012', category: 'men' },
-      { id: 'p3', title:'Relaxed Trousers', price:69.00, img:'./Imgs/p3.jpg', sku:'T-108', category: 'women' },
-      { id: 'p4', title:'Minimal Dress', price:89.00, img:'./Imgs/p4.jpg', sku:'D-004', category: 'women' },
-      { id: 'p5', title:'Classic Tee', price:29.00, img:'./Imgs/p5.jpg', sku:'TS-010', category: 'men' },
-      { id: 'p6', title:'Lightweight Knit', price:59.00, img:'./Imgs/p6.jpg', sku:'KN-022', category: 'women' },
-      { id: 'p7', title:'Long Coat', price:199.00, img:'./Imgs/p7.jpg', sku:'C-088', category: 'men' },
-      { id: 'p8', title:'Everyday Shorts', price:39.00, img:'./Imgs/p8.jpg', sku:'SH-009', category: 'men' },
-      { id: 'p9', title:'Kids T-Shirt', price:24.00, img:'./Imgs/p5.jpg', sku:'KT-001', category: 'kids' },
-      { id: 'p10', title:'Kids Jacket', price:59.00, img:'./Imgs/p2.jpg', sku:'KJ-002', category: 'kids' },
-      { id: 'p11', title:'Leather Bag', price:79.00, img:'./Imgs/p1.jpg', sku:'A-101', category: 'accessories' },
-      { id: 'p12', title:'Minimal Watch', price:149.00, img:'./Imgs/p3.jpg', sku:'A-102', category: 'accessories' }
+      { id: 'p1', title:'Oversized Shirt', price:40000, img:'./Imgs/p1.jpg', sku:'S-001', category: 'women' },
+      { id: 'p2', title:'Tailored Jacket', price:40000, img:'./Imgs/p2.jpg', sku:'J-012', category: 'men' },
+      { id: 'p3', title:'Relaxed Trousers', price:40000, img:'./Imgs/p3.jpg', sku:'T-108', category: 'women' },
+      { id: 'p4', title:'Minimal Dress', price:40000, img:'./Imgs/p4.jpg', sku:'D-004', category: 'women' },
+      { id: 'p5', title:'Classic Tee', price:40000, img:'./Imgs/p5.jpg', sku:'TS-010', category: 'men' },
+      { id: 'p6', title:'Lightweight Knit', price:40000, img:'./Imgs/p6.jpg', sku:'KN-022', category: 'women' },
+      { id: 'p7', title:'Long Coat', price:40000, img:'./Imgs/p7.jpg', sku:'C-088', category: 'men' },
+      { id: 'p8', title:'Everyday Shorts', price:40000, img:'./Imgs/p8.jpg', sku:'SH-009', category: 'men' },
+      { id: 'p9', title:'Kids T-Shirt', price:40000, img:'./Imgs/p5.jpg', sku:'KT-001', category: 'kids' },
+      { id: 'p10', title:'Kids Jacket', price:40000, img:'./Imgs/p2.jpg', sku:'KJ-002', category: 'kids' },
+      { id: 'p11', title:'Leather Bag', price:40000, img:'./Imgs/p1.jpg', sku:'A-101', category: 'accessories' },
+      { id: 'p12', title:'Minimal Watch', price:40000, img:'./Imgs/p3.jpg', sku:'A-102', category: 'accessories' }
     ];
 
     // App state
@@ -363,7 +363,7 @@
 
     // Utilities
     const $ = id => document.getElementById(id);
-    function formatPrice(v){ return '$' + v.toFixed(2) }
+    function formatPrice(v){ return '₦' + v.toLocaleString('en-NG') }
 
     // Render products grid
     const grid = $('product-grid');
@@ -551,10 +551,33 @@
       });
     }
 
-    // Checkout - Redirect to WhatsApp Business
+    // Checkout - Redirect to WhatsApp Business with order details
     $('checkout').addEventListener('click', ()=>{
-      // Replace with your actual WhatsApp Business URL
-      const whatsappUrl = "https://wa.me/1234567890?text=Hi%2C%20I%20would%20like%20to%20place%20an%20order";
+      if (Object.keys(state.cart).length === 0) {
+        alert('Your cart is empty!');
+        return;
+      }
+
+      // Build order summary
+      let orderSummary = "Hello! I would like to place an order:%0A%0A";
+      let total = 0;
+
+      Object.keys(state.cart).forEach(key => {
+        const item = state.cart[key];
+        const p = item.product;
+        const itemTotal = p.price * item.qty;
+        total += itemTotal;
+
+        orderSummary += `• ${p.title} (SKU: ${p.sku}) - ${item.qty} x ${formatPrice(p.price)} = ${formatPrice(itemTotal)}%0A`;
+      });
+
+      orderSummary += `%0ATotal: ${formatPrice(total)}%0A%0A`;
+      orderSummary += "Please let me know the next steps for payment and delivery.";
+
+      // Replace with your actual WhatsApp Business number
+      const whatsappNumber = "1234567890"; // Replace with your number
+      const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${orderSummary}`;
+
       window.open(whatsappUrl, '_blank');
     });
 
