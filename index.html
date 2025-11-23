@@ -160,6 +160,30 @@
       border:none;background:none;cursor:pointer;color:var(--accent-2);font-size:14px;padding:6px;
     }
 
+    /* Video Container */
+    .video-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin: 40px 0;
+    }
+    .video-column {
+      display: grid;
+      grid-template-rows: 1fr 1fr;
+      gap: 20px;
+    }
+    .video-item {
+      width: 100%;
+      height: 300px;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .video-item video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
     /* Cart drawer */
     .cart-btn{
       position:relative;
@@ -225,17 +249,26 @@
       .hero{flex-direction:column;align-items:flex-start}
       .hero-right{order:-1;width:100%}
       .hero-img{width:100%;height:420px}
+      .video-container {
+        grid-template-columns: 1fr;
+      }
     }
     @media(max-width:720px){
       .grid{grid-template-columns:repeat(2,1fr)}
       .card-media{height:300px}
       .modal{flex-direction:column}
       .modal-media{width:100%;height:260px}
+      .video-item {
+        height: 250px;
+      }
     }
     @media(max-width:420px){
       .grid{grid-template-columns:1fr}
       .hero-title{font-size:28px}
       .hero-desc{font-size:14px}
+      .video-item {
+        height: 200px;
+      }
     }
 
     /* Tiny helper */
@@ -375,7 +408,7 @@
     const $ = id => document.getElementById(id);
     function formatPrice(v){ return '₦' + v.toLocaleString('en-NG') }
 
-    // Render products grid
+    // Render products grid with video container after first 12 products
     const grid = $('product-grid');
     function renderProducts(list){
       grid.innerHTML = '';
@@ -383,7 +416,12 @@
         ? list
         : list.filter(p => p.category === state.currentCategory);
 
-      filteredList.forEach(p => {
+      // Split products into chunks: first 12, then the rest
+      const firstTwelve = filteredList.slice(0, 12);
+      const remainingProducts = filteredList.slice(12);
+
+      // Render first 12 products
+      firstTwelve.forEach(p => {
         const el = document.createElement('article');
         el.className = 'card';
         el.innerHTML = `
@@ -401,6 +439,64 @@
         `;
         grid.appendChild(el);
       });
+
+      // Add video container after first 12 products
+      if (remainingProducts.length > 0) {
+        const videoContainer = document.createElement('div');
+        videoContainer.className = 'video-container';
+        videoContainer.innerHTML = `
+          <div class="video-column">
+            <div class="video-item">
+              <video autoplay loop muted playsinline>
+                <source src="./videos/video1.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+            </div>
+            <div class="video-item">
+              <video autoplay loop muted playsinline>
+                <source src="./videos/video2.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          </div>
+          <div class="video-column">
+            <div class="video-item">
+              <video autoplay loop muted playsinline>
+                <source src="./Videos/video3.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+            </div>
+            <div class="video-item">
+              <video autoplay loop muted playsinline>
+                <source src="./Videos/video4.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          </div>
+        `;
+        grid.appendChild(videoContainer);
+      }
+
+      // Render remaining products after video container
+      remainingProducts.forEach(p => {
+        const el = document.createElement('article');
+        el.className = 'card';
+        el.innerHTML = `
+          <div class="card-media" style="background-image:url('${p.img}')" role="img" aria-label="${p.title}"></div>
+          <div class="card-body">
+            <div>
+              <div class="product-title">${p.title}</div>
+              <div class="product-price">${formatPrice(p.price)}</div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end">
+              <button class="quick" data-id="${p.id}" aria-label="Quick view ${p.title}">Quick view</button>
+              <button class="quick" data-add="${p.id}" aria-label="Add ${p.title} to cart">＋</button>
+            </div>
+          </div>
+        `;
+        grid.appendChild(el);
+      });
+
       $('product-count').textContent = filteredList.length;
     }
 
@@ -620,8 +716,3 @@
   </script>
 </body>
 </html>
-
-
-
-
-
