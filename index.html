@@ -164,6 +164,7 @@
     .video-section {
       margin: 60px 0;
       text-align: center;
+      width: 100%;
     }
     .video-section-title {
       font-size: 24px;
@@ -184,6 +185,7 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 24px;
+      width: 100%;
       max-width: 900px;
       margin: 0 auto;
     }
@@ -350,9 +352,9 @@
         </select></div>
       </div>
 
-      <section class="grid" id="product-grid" aria-live="polite">
-        <!-- cards will be injected by JS -->
-      </section>
+      <div id="main-content">
+        <!-- First 12 products and video section will be injected here by JS -->
+      </div>
     </main>
 
     <footer>
@@ -436,16 +438,25 @@
     const $ = id => document.getElementById(id);
     function formatPrice(v){ return '₦' + v.toLocaleString('en-NG') }
 
-    // Render products grid with video section after first 12 products
-    const grid = $('product-grid');
+    // Render products with video section after first 12 products
+    const mainContent = $('main-content');
     function renderProducts(list){
-      grid.innerHTML = '';
+      mainContent.innerHTML = '';
       const filteredList = state.currentCategory === 'all'
         ? list
         : list.filter(p => p.category === state.currentCategory);
 
-      // Render all products first
-      filteredList.forEach(p => {
+      // Split products into first 12 and remaining
+      const firstTwelve = filteredList.slice(0, 12);
+      const remainingProducts = filteredList.slice(12);
+
+      // Create first grid for first 12 products
+      const firstGrid = document.createElement('section');
+      firstGrid.className = 'grid';
+      firstGrid.setAttribute('aria-live', 'polite');
+
+      // Add first 12 products
+      firstTwelve.forEach(p => {
         const el = document.createElement('article');
         el.className = 'card';
         el.innerHTML = `
@@ -461,52 +472,74 @@
             </div>
           </div>
         `;
-        grid.appendChild(el);
+        firstGrid.appendChild(el);
       });
 
-      // If we have more than 12 products, insert video section after the 12th product
+      mainContent.appendChild(firstGrid);
+
+      // Add video section after first 12 products (only if there are more than 12 products)
       if (filteredList.length > 12) {
-        const allCards = grid.querySelectorAll('.card');
-        if (allCards.length > 12) {
-          const twelfthCard = allCards[11]; // 12th card (0-indexed)
-          
-          // Create video section
-          const videoSection = document.createElement('div');
-          videoSection.className = 'video-section';
-          videoSection.innerHTML = `
-            <h2 class="video-section-title">The Blanco Experience</h2>
-            <p class="video-section-subtitle">Discover the craftsmanship and elegance behind our minimal collection</p>
-            <div class="video-container">
-              <div class="video-item">
-                <video autoplay loop muted playsinline>
-                  <source src="./videos/video1.mp4" type="video/mp4">
-                  Your browser does not support the video tag.
-                </video>
+        const videoSection = document.createElement('div');
+        videoSection.className = 'video-section';
+        videoSection.innerHTML = `
+          <h2 class="video-section-title">The Blanco Experience</h2>
+          <p class="video-section-subtitle">Discover the craftsmanship and elegance behind our minimal collection</p>
+          <div class="video-container">
+            <div class="video-item">
+              <video autoplay loop muted playsinline>
+                <source src="./Videos/video1.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+            </div>
+            <div class="video-item">
+              <video autoplay loop muted playsinline>
+                <source src="./Videos/video2.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+            </div>
+            <div class="video-item">
+              <video autoplay loop muted playsinline>
+                <source src="./Videos/video3.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+            </div>
+            <div class="video-item">
+              <video autoplay loop muted playsinline>
+                <source src="./Videos/video4.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          </div>
+        `;
+        mainContent.appendChild(videoSection);
+      }
+
+      // Add remaining products in a separate grid
+      if (remainingProducts.length > 0) {
+        const remainingGrid = document.createElement('section');
+        remainingGrid.className = 'grid';
+        remainingGrid.setAttribute('aria-live', 'polite');
+
+        remainingProducts.forEach(p => {
+          const el = document.createElement('article');
+          el.className = 'card';
+          el.innerHTML = `
+            <div class="card-media" style="background-image:url('${p.img}')" role="img" aria-label="${p.title}"></div>
+            <div class="card-body">
+              <div>
+                <div class="product-title">${p.title}</div>
+                <div class="product-price">${formatPrice(p.price)}</div>
               </div>
-              <div class="video-item">
-                <video autoplay loop muted playsinline>
-                  <source src="./videos/video2.mp4" type="video/mp4">
-                  Your browser does not support the video tag.
-                </video>
-              </div>
-              <div class="video-item">
-                <video autoplay loop muted playsinline>
-                  <source src="./videos/video3.mp4" type="video/mp4">
-                  Your browser does not support the video tag.
-                </video>
-              </div>
-              <div class="video-item">
-                <video autoplay loop muted playsinline>
-                  <source src="./videos/video4.mp4" type="video/mp4">
-                  Your browser does not support the video tag.
-                </video>
+              <div style="display:flex;flex-direction:column;align-items:flex-end">
+                <button class="quick" data-id="${p.id}" aria-label="Quick view ${p.title}">Quick view</button>
+                <button class="quick" data-add="${p.id}" aria-label="Add ${p.title} to cart">＋</button>
               </div>
             </div>
           `;
-          
-          // Insert video section after the 12th card
-          twelfthCard.parentNode.insertBefore(videoSection, twelfthCard.nextSibling);
-        }
+          remainingGrid.appendChild(el);
+        });
+
+        mainContent.appendChild(remainingGrid);
       }
 
       $('product-count').textContent = filteredList.length;
@@ -542,16 +575,8 @@
       });
     });
 
-    // Quick view modal
-    const modalBg = $('modal-bg');
-    const modalTitle = $('modal-title');
-    const modalDesc = $('modal-desc');
-    const modalPrice = $('modal-price');
-    const modalMedia = $('modal-media');
-    const modalSku = $('modal-sku');
-    let currentModalProduct = null;
-
-    grid.addEventListener('click', (e) => {
+    // Quick view modal - attach event to main content
+    mainContent.addEventListener('click', (e) => {
       const quick = e.target.closest('.quick');
       if(!quick) return;
       const id = quick.dataset.id;
@@ -562,6 +587,15 @@
         addToCart(addId,1);
       }
     });
+
+    // Modal functions
+    const modalBg = $('modal-bg');
+    const modalTitle = $('modal-title');
+    const modalDesc = $('modal-desc');
+    const modalPrice = $('modal-price');
+    const modalMedia = $('modal-media');
+    const modalSku = $('modal-sku');
+    let currentModalProduct = null;
 
     function openModal(id){
       const p = products.find(x=>x.id===id);
